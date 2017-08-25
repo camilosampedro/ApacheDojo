@@ -1,3 +1,10 @@
+---
+title: Apache Dojo
+theme: blood
+revealOptions:
+    transition: 'fade'
+---
+
 # Apache Dojo!
 By: Camilo Sampedro
 
@@ -82,6 +89,67 @@ By: Camilo Sampedro
 
 ---
 
+## RDDs
+__R__esilient __D__istributed __D__atasets__
+
+![rdd](images/rdd.png)
+
+---
+
+## Dataframes
+Structured RDDs
+
+![rdd](images/dataframe.jpg)
+
+---
+
+## SparkSQL
+Execute SQL queries on Dataframes!
+
+```scala
+// Get data from Hive
+val business = hiveContext.sql("SELECT * FROM stg_business")
+business.cache() // Store it in memory
+business.registerTempTable("business")
+```
+
+---
+
+## Transformations
+They can be executed on the same _MapReduce_ task
+
+```scala
+rdd.map(x => x * 2)
+rdd.flatMap(x => x.split(" "))
+rdd.filter(x => x.size() > 10)
+rdd.distinct()
+rdd.join(anotherRdd)
+// ...
+```
+
+---
+
+## Actions
+Performs all the accumulated _MapReduce_ tasks
+
+```scala
+rdd.reduce(_ + _)
+rdd.collect()
+rdd.count()
+rdd.first()
+rdd.saveAsTextFile("/user/cloudera/result")
+// ...
+```
+
+---
+
+## Apache Spark
+Execution modes: __master__:
+
+![executionmodes](images/executionmodes.png)
+
+---
+
 ## Scala
 * _Functional_ and _object oriented_ language.
 * Based on _Java_ and _Erlang_ mostly.
@@ -110,6 +178,76 @@ val res3 = list.reduce( (x, y) => x + y )
 ```python
 res1 = map(lambda elem: elem * 2, list)
 res2 = filter(lambda elem: elem % 2 == 0, list)
+```
+
+---
+
+## Access to the server
+
+```bash
+ssh gero@172.16.1.70          
+# Password: HXpPLA3M
+sudo docker exec -it cloudera-example bash
+spark-shell --master yarn     
+# Or pyspark --master yarn
+```
+
+---
+
+## Word Count
+
+![wordcount](images/wordcount.png)
+
+---
+
+## Input
+
+```scala
+val input = sc.textFile("/user/cloudera/libros/*")
+```
+
+---
+
+## Splitting and mapping
+
+```scala
+// Split the words of each line.
+val splitted = input.flatMap(line => line.split(" "))
+
+// Add a value 1 for each word key.
+val mapped = splitted.map(word => (word, 1))
+```
+
+---
+
+## Reduce by key
+
+```scala
+// Sum all the values for each word key
+val wordCounts = mapped.reduceByKey((ac, v) => ac + v)
+```
+
+---
+
+## Result
+
+```scala
+// Take the most frecuent words
+wordCounts.map(r=>(r._2, r._1)).top(10)
+```
+
+---
+
+## Big Data Pi calculation
+
+```scala
+val NUM_SAMPLES = 5000000       // Increment for better results
+val count = sc.parallelize(1 to NUM_SAMPLES).filter {notUsed =>
+  val x = math.random           // Two random numbers
+  val y = math.random           // between 0 and 1
+  x*x + y*y < 1                 // The ones inside the circle
+}.count()
+println(s"Pi is roughly ${4.0 * count / NUM_SAMPLES}")
 ```
 
 ---
