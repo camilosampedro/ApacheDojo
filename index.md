@@ -1,6 +1,7 @@
 ---
 title: Apache Dojo
-theme: blood
+theme: moon
+highlightTheme: monokai
 revealOptions:
     transition: 'fade'
 ---
@@ -19,6 +20,7 @@ By: Camilo Sampedro
 ## Apache Hadoop
 * Base technology for Apache Big Data technologies.
 * Uses __MapReduce__ schema for its working.
+
 ![hadoop](images/hadoop.jpg)
 
 ---
@@ -151,9 +153,41 @@ Execution modes: __master__:
 ---
 
 ## Scala
-* _Functional_ and _object oriented_ language.
+* _Functional_ and a __pure__ _object oriented_ language.
 * Based on _Java_ and _Erlang_ mostly.
 ![scala](images/scala.png)
+
+---
+
+## Scala (Functional)
+* Functions as values
+
+```scala
+val f = (x: Int) => x * 2
+val res = f(3)
+```
+
+---
+
+## Scala (Functional)
+* Higher order Functions
+
+```scala
+def apply(f: Int => String, v: Int) = f(v)
+```
+
+---
+
+## Scala (Functional)
+
+* Function nesting and currying
+
+```scala
+def modN(n: Int)(x: Int) = ((x % n) == 0)
+val nums = List(1, 2, 3, 4, 5, 6, 7, 8)
+println(filter(nums, modN(2)))
+println(filter(nums, modN(3)))
+```
 
 ---
 
@@ -190,6 +224,14 @@ ssh gero@172.16.1.70
 sudo docker exec -it cloudera-example bash
 spark-shell --master yarn     
 # Or pyspark --master yarn
+```
+
+---
+
+```scala
+scp gero@172.16.1.70:cloudera-quickstart-vm-5.10.0-0-beta-docker/cloudera-quickstart-vm-5.10.0-0-beta-docker.tar .
+sudo docker import - cloudera/quickstart:latest < cloudera-quickstart-vm-5.10.0-0-beta-docker.tar
+sudo docker run --hostname=quickstart.cloudera --privileged=true -it -p 7107:80 -p 8888:8888 -p 7180:7180 --name "cloudera-example" cloudera/quickstart:latest "/usr/bin/docker-quickstart"
 ```
 
 ---
@@ -267,6 +309,20 @@ println(s"Pi is roughly ${4.0 * count / NUM_SAMPLES}")
 * Way faster than _Apache Hive_, but with more complexity.
 
 ![hbase](images/hbase.png)
+
+---
+
+## Apache Zeppelin
+* Big Data notebooks: __Scala__, __Python__ and __SQL__
+
+![zeppelin](images/zeppelin.png)
+
+---
+
+## Apache Kylin
+* Multidimensional cubes for HBase
+
+![multicube](images/multicube.gif)
 
 ---
 
